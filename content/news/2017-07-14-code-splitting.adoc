@@ -79,10 +79,10 @@ with `cljs.loader`.
 
 `cljs.loader` provides a shared Google Closure
 https://google.github.io/closure-library/api/goog.module.ModuleManager.html[ModuleManager]
-singleton which initialized correctly to your `:modules` graph without
-additional configuration regardless of the optimization level.
+singleton automatically initialized to your `:modules` graph
+regardless of the optimization level.
 
-The following is a simple short example:
+The following is a simple short example of `cljs.loader` functionality:
 
 [code,clojure]
 ```
@@ -108,6 +108,9 @@ For a complete walk through of the enhanced `:modules` functionality please
 refer the new guide.
 
 == Technical Description
+
+The following highlights some interesting technical details for interested
+readers and implementers of client build optimization.
 
 === Module Assignment
 
