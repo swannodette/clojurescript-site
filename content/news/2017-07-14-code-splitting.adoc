@@ -74,13 +74,15 @@ and production.
 
 Asynchronous loading of module splits is now standardized with the introduction
 of the `cljs.loader` namespace. If any entry point in your application needs
-to invoke the load of another module due to some user action, youcan now do so
+to invoke the load of another module due to some user action, you can now do so
 with `cljs.loader`.
 
 `cljs.loader` provides a shared Google Closure
 https://google.github.io/closure-library/api/goog.module.ModuleManager.html[ModuleManager]
 singleton which initialized correctly to your `:modules` graph without
 additional configuration regardless of the optimization level.
+
+The following is a simple short example:
 
 [code,clojure]
 ```
@@ -96,6 +98,11 @@ additional configuration regardless of the optimization level.
       (fn [e]
         ((resolve 'bar.core/woz))))))
 ```
+
+Note that this example shows how to call across module boundaries without
+having the compiler complain about functionality not present in this code split.
+This is possible thanks to the recent inclusion of static `resolve` to the
+standard library.
 
 For a complete walk through of the enhanced `:modules` functionality please
 refer the new guide.
