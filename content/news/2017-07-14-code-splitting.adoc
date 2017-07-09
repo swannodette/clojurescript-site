@@ -74,12 +74,28 @@ and production.
 
 Asynchronous loading of module splits is now standardized with the introduction
 of the `cljs.loader` namespace. If any entry point in your application needs
-to invoke the load of another module due to some user action, can now do so with `cljs.loader`.
+to invoke the load of another module due to some user action, youcan now do so
+with `cljs.loader`.
 
 `cljs.loader` provides a shared Google Closure
 https://google.github.io/closure-library/api/goog.module.ModuleManager.html[ModuleManager]
 singleton which initialized correctly to your `:modules` graph without
 additional configuration regardless of the optimization level.
+
+[code,clojure]
+```
+(ns foo.core
+ (:require [cljs.loader :as loader]
+           [goog.dom :as gdom]
+           [goog.events :as events])
+ (:import [goog.events EventType]))
+
+(events/listen (gdom/getElement "button") EventType.CLICK
+  (fn [e]
+    (loader/load :bar
+      (fn [e]
+        ((resolve 'bar.core/woz))))))
+```
 
 For a complete walk through of the enhanced `:modules` functionality please
 refer the new guide.
