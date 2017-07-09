@@ -24,8 +24,13 @@ While ClojureScript has provided basic integration with this facility,
 the next release will feature greatly enhanced and comprehensive support for
 code splitting and asynchronous loading of these splits.
 
+=== Terminology
+
 If you are familiar with Webpack terminology, in the following description note
 that **module** in this context refers to a **code split** or **chunk**.
+
+By *entry point* we mean a source file which represents a logical entry point
+into your application (login, users, admin, etc.).
 
 == Enhanced Code Splitting
 
@@ -36,7 +41,7 @@ should now remove these. If you were using namespace wildcard matching, this is
 also no longer necessary. For details about how we assign an input to a
 particular module see the technical description below.
 
-Concretely, the following is an antipattern:
+Concretely, the following is now an anti-pattern:
 
 [code,clojure]
 ```
@@ -48,7 +53,7 @@ Concretely, the following is an antipattern:
             :depends-on [:vendor]}}
 ```
 
-All that is required now is:
+All that is required is:
 
 [code,clojure]
 ```
@@ -67,13 +72,14 @@ and production.
 
 == cljs.loader
 
-Asynhronous loading of module splits is now standardized with the introduction
-of the `cljs.loader` namespace. In any entry point that needs to invoke the
-load of another module due to some user action, can now do so with `cljs.loader`.
+Asynchronous loading of module splits is now standardized with the introduction
+of the `cljs.loader` namespace. If any entry point in your application needs
+to invoke the load of another module due to some user action, can now do so with `cljs.loader`.
 
-`cljs.loader` provides a shared Google Closure `ModuleManager` singleton which
-initialized correctly to your `:modules` graph without additional configuration
-regardless of the optimization level.
+`cljs.loader` provides a shared Google Closure
+https://google.github.io/closure-library/api/goog.module.ModuleManager.html[ModuleManager]
+singleton which initialized correctly to your `:modules` graph without
+additional configuration regardless of the optimization level.
 
 For a complete walk through of the enhanced `:modules` functionality please
 refer the new guide.
