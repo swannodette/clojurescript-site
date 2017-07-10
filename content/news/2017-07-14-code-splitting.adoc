@@ -5,6 +5,8 @@ David Nolen
 
 ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
+This is a post in the <<2017-07-07-sneak-preview#,Sneak Preview>> series.
+
 As client applications increase in size it becomes desirable to optimize the
 time to load a logical screen. Network requests should be minimized while at the
 same the loaded code should be restricted to that which is absolutely necessary
@@ -172,14 +174,15 @@ match user expectations. However if we left it at that we would be missing a
 huge opportunity. Along with dead code elimination Google Closure Complier
 employs another useful optimization - *cross module code motion*. Individual
 program values (including functions and methods) which are free of side effects
-can be moved back down* the module graph.
+can be moved _back down_ the module graph.
 
 A functional programming language like Clojure is well suited for this kind
 of optimization and the ClojureScript compiler carefully generates code in
 many cases to take advantage of this capability.
 
-In practice this means that if some single function present in `:cljs-base` is
-only ever used in `:module-a` will be moved back to `:module-a`.
+In practice this means that if some function and its dependencies
+present in `:cljs-base` are only ever used in `:module-a`, they will all be moved
+back to `:module-a`.
 
 == Conclusion
 
