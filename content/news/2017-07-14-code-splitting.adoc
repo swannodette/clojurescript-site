@@ -136,7 +136,7 @@ base module `:cljs-base`.
            :module-a  {:entries #'{foo.core}
                        :depends-on [:cljs-base]}
            :module-b  {:entries #'{bar.core}
-                       :depends-on [:cljs-base]}}
+                       :gdepends-on [:cljs-base]}}
 ```
 
 We will then compute the depth of every module in the graph:
@@ -168,14 +168,18 @@ doesn't require managing splits via source code or any additional plugins.
 === Cross Module Code Motion
 
 Automatic module assignment pushes code upwards to produce code splits that
-match user expectations. However if we left it at that we would be missing
-a huge opportunity. Along with dead code elimination Google Closure employs
-another useful optimization - *cross module code motion*. Individual program values
-(including functions and methods) which are free of side effects can be moved
-*back down* the module graph.
+match user expectations. However if we left it at that we would be missing a
+huge opportunity. Along with dead code elimination Google Closure Complier
+employs another useful optimization - *cross module code motion*. Individual
+program values (including functions and methods) which are free of side effects
+can be moved back down* the module graph.
 
-So some if some single function present in `:cljs-base` is only ever used in
-`:module-a` will be moved back to `:module-a`.
+A functional programming language like Clojure is well suited for this kind
+of optimization and the ClojureScript compiler carefully generates code in
+many cases to take advantage of this capability.
+
+In practice this means that if some single function present in `:cljs-base` is
+only ever used in `:module-a` will be moved back to `:module-a`.
 
 == Conclusion
 
