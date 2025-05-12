@@ -1,0 +1,176 @@
+= Code Splitting
+David Nolen
+2017-07-10
+:type: guides
+:toc: macro
+:icons: font
+
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
+
+*This guide requires ClojureScript 1.10.238 or later and assumes
+familiarity with the <<xref/../../guides/quick-start#,Quick Start>>*.
+
+As client applications become larger it becomes desirable to load only the code
+actually required to run a particular logical screen. Previously ClojureScript
+`:modules` compiler option permitted such code splitting, but this feature only
+worked under `:advanced` compilation and users would still have to manage
+loading these splits. `:modules` also required manual explicit placement of many
+entries to produce optimal splits otherwise dependencies would get moved to
+`:cljs-base`.
+
+All of these issues are now addressed directly in ClojureScript. This guide will
+walk you through code splitting a simple project and demonstrate these new
+enhancements.
+
+=== Make a Simple Project
+
+Create a project folder:
+
+[source,bash]
+```
+mkdir -p hello-modules
+cd hello-modules
+mkdir src
+```
+
+Create a `deps.edn` file that looks like the following:
+
+[source,clojure]
+```
+{:deps {org.clojure/clojurescript {:mvn/version "1.11.54"}}}
+```
+
+Create a `build.edn` file that looks like the following:
+
+[source,clojure]
+```
+{:output-dir "out"
+ :asset-path "/out"
+ :browser-repl false
+ :modules {:foo {:entries #{foo.core}
+                 :output-to "out/foo.js"}
+           :bar {:entries #{bar.core}
+                 :output-to "out/bar.js"}}}
+```
+
+Now make an `index.html` file:
+
+[source,html]
+```
+<html>
+    <body>
+         <button id="button">Load Bar!</button>
+         <script src="out/cljs_base.js" type="text/javascript"></script>
+         <script src="out/foo.js" type="text/javascript"></script>
+    </body>
+</html>
+```
+
+=== The Sources
+
+Create the `foo.core` namespace:
+
+[source,bash]
+```
+mkdir -p src/foo
+touch src/foo/core.cljs
+```
+
+Edit this file to look like the following:
+
+[source,clojure]
+```
+(ns foo.core
+  (:require [goog.dom :as gdom]
+            [goog.events :as events]
+            [cljs.loader :as loader])
+  (:import [goog.events EventType]))
+
+(println "I'm foo!")
+
+(events/listen (gdom/getElement "button") EventType.CLICK
+  (fn [e]
+    (loader/load :bar
+      (fn []
+        ((resolve 'bar.core/woz))))))
+
+(loader/set-loaded! :foo)
+```
+
+Notice the unfamiliar namespace `cljs.loader`. This namespace provides a Google
+Closure ModuleManager singleton to manage the loading of code splits. This
+manager will be initialized with whatever module graph you have defined in
+`:modules`.
+
+When the user clicks the button we load the `:bar` module and invoke a function
+that exists in the `bar.core` namespace. Notice that we use `resolve`. This is
+because we cannot directly call something we never required. If we tried to do
+this without `resolve` the ClojureScript compiler would emit an undeclared var
+warning during compilation.
+
+Finally, note that it is necessary to manually mark a module as loaded via
+`cljs.loader/set-loaded!`. Without this dependencies may be loaded multiple
+times which may lead to unpredictable behavior.
+
+Create the `bar.core` namespace:
+
+[source,bash]
+```
+mkdir -p src/bar
+touch src/bar/core.cljs
+```
+[source,clojure]
+
+```
+(ns bar.core
+  (:require [cljs.loader :as loader]))
+
+(println "I'm bar!")
+
+(defn woz []
+  (println "WOZ!"))
+
+(loader/set-loaded! :bar)
+```
+
+=== Build the Project
+
+Build your project and start the builtin HTTP server:
+
+[source,bash]
+```
+clj -M -m cljs.main -v -co build.edn -c -s
+```
+
+Navigate to http://localhost:9000/index.html.
+
+Click the button. You will see that the `:bar` module gets loaded and the
+function in the other namespace gets invoked.
+
+=== Release Builds
+
+Build your project:
+
+[source,bash]
+```
+clj -M -m cljs.main -co build.edn -O advanced -c -s
+```
+
+Navigate to http://localhost:9000/index.html. Your application should function
+correctly even though advanced compiled.
+
+Change the `foo.core` to take a new require like `cljs.reader`. Rebuild.
+
+You should see that `cljs.reader` gets moved into the `:foo` module but not
+`:bar`.
+
+If you examine the split files in `out` you will see that `foo.js` is larger
+than `bar.js`.
+
+=== Additional Notes
+
+Because the code in splits is running in JavaScript's global scope, sometimes it
+may interfere with other JavaScript loaded on the same page (i.e. analytics),
+which may result in unpredictable behaviour. If this is a problem for your
+application prefix all variables in generated JavaScript by specifiyng
+`:rename-prefix` compiler option.

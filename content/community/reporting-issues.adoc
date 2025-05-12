@@ -7,12 +7,14 @@ David Nolen
 
 ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
+To report an issue please file a question on https://ask.clojure.org[ask.clojure.org] under the ClojureScript category and tag it with `problem`. CLJS developers can assess and determine whether it is an issue. If needed, they can file a ticket in the https://clojure.atlassian.net/browse/CLJS[ClojureScript issue tracker].
+
 It's important that before submitting any issue that you have a thorough
 understanding of the <<xref/../../../guides/quick-start#,Quick Start>> first. Even if you are an
 experienced ClojureScript developer this is required reading.
 
 It's helpful, but not essential, to first check the
-http://dev.clojure.org/jira/browse/CLJS[existing bug reports], the
+https://clojure.atlassian.net/browse/CLJS[existing bug reports], the
 https://groups.google.com/forum/#!forum/clojurescript[mailing list], or
 the Freenode #clojurescript IRC channel or Slack channels and ensure
 that the issue hasn't been reported before.
@@ -28,7 +30,10 @@ non-trivial ways, and the best way to isolate the issue to ClojureScript
 is to remove them from the report altogether.
 
 Please report issues by building the uberjar from master and using this
-to verify the issue. Do not use any other 3rd party tooling (Maven,
+to verify the issue. Using https://clojurescript.org/reference/repl-and-main[`cljs.main`]
+with this uberjar to create a minimal repro is ideal. Alternatively,
+using https://clojure.org/guides/getting_started[`clj`] and `deps.edn` is
+acceptable. Do not use any other 3rd party tooling (Maven,
 Leiningen, Boot). When creating issues please add all relevant
 instructions and code to reproduce to the ticket directly or via
 additional comments. Please do not attach projects, links to projects,
@@ -68,3 +73,63 @@ run the following:
 
 This will install ClojureScript into your local Maven. Make note of the
 version when it scrolls by. Use this as appropriate for your tooling.
+
+[[pinpointing-regressions-with-git-bisect]]
+=== Pinpointing Regressions with git bisect
+
+If you've discovered a regression, it is helpful to identify information
+regarding the first bad commit when reporting issues. This is easy to do by
+first depending on a checkout of ClojureScript as a local root dependency and
+then using `git bisect`.
+
+For this example, let's say you've discovered a regression that is reproducible
+directly in the REPL (variations on the below can be employed if not).
+
+First checkout ClojureScript master and `cd` to the top of the checkout tree.
+
+Assuming you can reproduce the issue on master, but that things worked with
+ClojureScript 1.10.748, issue these commands at the top of the checkout tree:
+
+[source,bash]
+----
+git bisect start
+git bisect bad HEAD
+git bisect good r1.10.748
+----
+
+Then (in another directory) start up a REPL against the current state of the 
+checkout tree by issuing:
+
+[source,bash]
+----
+clj -Srepro -Sdeps '{:deps {org.clojure/clojurescript {:local/root "/<path-to-checkout>/clojurescript"}}}' -m cljs.main -r
+----
+
+Test to see if you can reproduce the issue in the REPL and then exit the REPL.
+
+If you couldn't reproduce the problem, issue this in the ClojureScript 
+checkout tree:
+
+[source,bash]
+----
+git bisect good
+----
+
+Or, if you were able to reproduce the problem:
+
+[source,bash]
+----
+git bisect bad
+----
+
+If the bisect is complete, `git` will indicate that a certain commit hash 
+"is the first bad commit." Copy all of this text for JIRA.
+
+Otherwise restart the REPL and repeat the above steps until done.
+
+When finished, you can issue this to restore your ClojureScript checkout:
+
+[source,bash]
+----
+git bisect reset
+----

@@ -24,13 +24,13 @@ If you wish to make a contribution (typo, modification, or new content), you mus
 [[contributor]]
 == How To Become a Contributor
 
-Contributors must sign the Clojure Contributor Agreement prior to submitting changes. The https://secure.echosign.com/public/hostedForm?formid=95YMDL576B336E[Contributor Agreement] (CA) gives Rich Hickey and the contributor joint copyright interests: the contributor retains copyrights while also granting those rights to Rich Hickey as the open source project sponsor.
+Contributors must sign the Clojure Contributor Agreement prior to submitting changes. The https://na1.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhCSXRbJ7T5RGvmMvmpg3CzvkF_RcpWXMnGWW_W9340ztJ3-ChQ0m18hA-d06ufD8Yk*[Contributor Agreement] (CA) gives Rich Hickey and the contributor joint copyright interests: the contributor retains copyrights while also granting those rights to Rich Hickey as the open source project sponsor.
 
-The CA is derived from the Oracle Contributor Agreement (OCA), used for OpenJDK, Netbeans and OpenSolaris projects and others. There is a good http://www.oracle.com/technetwork/oca-faq-405384.pdf[OCA FAQ] answering many questions.
+The CA is derived from the Oracle Contributor Agreement (OCA), used for OpenJDK, Netbeans and OpenSolaris projects and others. There is a good https://www.oracle.com/technetwork/oca-faq-405384.pdf[OCA FAQ] answering many questions.
 
 By executing the CA, contributors protect the ClojureScript site content and protect the flexibility to adapt the project to the changing demands of the community. In order for the CA to be effective, the ClojureScript project must obtain an assignment for all contributions. Please review the CA for a complete understanding of its terms and conditions. By contributing source code or other material to ClojureScript, you represent that you have a CA with Rich Hickey for such contributions. In order to track contributors, you understand that your full name and username may be posted on a web page listing authorized contributors that is accessible via a public URL.
 
-To complete the agreement, fill out and submit the  https://secure.echosign.com/public/hostedForm?formid=95YMDL576B336E[Contributor Agreement] (an online e-form).
+To complete the agreement, fill out and submit the https://na1.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhCSXRbJ7T5RGvmMvmpg3CzvkF_RcpWXMnGWW_W9340ztJ3-ChQ0m18hA-d06ufD8Yk*[Contributor Agreement] (an online e-form).
 
 Note that if you have already signed the Clojure Contributor Agreement to supply patches to the ClojureScript source code, you do not need to sign it again as it is the same agreement.
 
@@ -75,9 +75,9 @@ To actively contribute to the site, it's important to keep your own fork up-to-d
 [[build]]
 == Building and Previewing Changes
 
-When working on bigger changes it's useful to build the site locally. The site is built using http://jbake.org/[JBake].
+When working on bigger changes it's useful to build the site locally. The site is built using https://jbake.org/[JBake].
 
-To http://jbake.org/docs/2.4.0/#installation[install] JBake 2.5.0-SNAPSHOT:
+To https://jbake.org/docs/2.5.0/#installation[install] JBake 2.5.0-SNAPSHOT:
 
 . `curl -O http://cdn.cognitect.com/clojurescript.org/jbake-2.5.0-SNAPSHOT-bin.zip` (or download this file with your browser)
 . `unzip -o jbake-2.5.0-SNAPSHOT-bin.zip`
@@ -92,14 +92,16 @@ Retrieve the content:
 
 Retrieve and install the current theme assets (these don't change very often so you don't need to do this every time):
 
-. `curl -O http://cdn.cognitect.com/clojurescript.org/cljstheme.zip` (or download this file with your browser to the clojurescript-site directory)
+. `curl -O https://clojurescript.org/cljstheme.zip` (or download this file with your browser to the clojurescript-site directory)
 . `unzip -o cljstheme.zip`
 
 Generate the pages:
 
+> Note that `jbake` 2.5.0 requires Java 8. (It will not run properly under Java 9.)
+
 . `jbake` - this will create the static site in the output directory
 . To view the static files, open `output/index` in your browser
-. To view a live preview, run `jbake -s` and go to http://localhost:8820/index
+. To view a live preview, run `jbake -s` and go to https://localhost:8820/index
 
 [[style]]
 == Style and Navigation Changes
@@ -127,4 +129,4 @@ Thanks for your contributions!
 
 Copyright © 2015 Rich Hickey and contributors
 
-All documentation contained in this repository is licensed by Rich Hickey under the http://www.eclipse.org/legal/epl-v10.html[Eclipse Public License v1.0] unless otherwise noted.
+All documentation contained in this repository is licensed by Rich Hickey under the https://www.eclipse.org/legal/epl-v10.html[Eclipse Public License v1.0] unless otherwise noted.
